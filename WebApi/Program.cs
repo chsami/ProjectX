@@ -1,6 +1,5 @@
 using MediatR;
 using WebApi.Infrastructure;
-using WebApi.Infrastructure.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
