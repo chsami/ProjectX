@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Features.Products.Commands;
 using WebApi.Features.Products.Queries;
 
 namespace WebApi.Controllers;
@@ -23,5 +24,14 @@ public class ProductController : ControllerBase
         var response = await _mediator.Send(new GetProductRequest() { Id = productId });
 
         return response;
+    }
+
+
+    [HttpPost(Name = "AddProduct")]
+    public async Task<int> Post(CreateProductRequest product)
+    {
+        var id = await _mediator.Send(product);
+
+        return id;
     }
 }
