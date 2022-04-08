@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebApi.Domain;
 using WebApi.Domain.Contracts;
+using WebApi.Domain.Entities;
 using WebApi.Infrastructure.Models;
 
 namespace WebApi.Infrastructure.Database
 {
     public class ProjectDbContext : DbContext
     {
+        public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Audit> AuditTrails { get; set; }
 
@@ -14,10 +16,7 @@ namespace WebApi.Infrastructure.Database
         {
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-       => optionsBuilder.UseNpgsql(@"Host=192.168.0.221;Username=postgres;Password=password;Database=postgres");
-
-        public virtual async Task<int> SaveChangesAsync(string userId = null, CancellationToken cancellationToken = new())
+        public virtual async Task<int> SaveChangesAsync(string? userId = null, CancellationToken cancellationToken = new())
         {
             var auditEntries = OnBeforeSaveChanges(userId);
             var result = await base.SaveChangesAsync(cancellationToken);
@@ -43,12 +42,12 @@ namespace WebApi.Infrastructure.Database
                     {
                         case EntityState.Added:
                             auditableEntity.CreatedOn = DateTime.UtcNow;
-                            auditableEntity.CreatedBy = "TODO CreatedBy";
+                            auditableEntity.CreatedBy = userId;
                             break;
 
                         case EntityState.Modified:
                             auditableEntity.LastModifiedOn = DateTime.UtcNow;
-                            auditableEntity.LastModifiedBy = "TODO LastModifiedBy";
+                            auditableEntity.LastModifiedBy = userId;
                             break;
                     }
                 }

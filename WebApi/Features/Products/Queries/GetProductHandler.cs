@@ -1,16 +1,18 @@
 ﻿using MediatR;
 using WebApi.Infrastructure.Database;
+using WebApi.Infrastructure.Services.Firebase;
+using WebApi.Services;
 
 namespace WebApi.Features.Products.Queries
 {
     public class GetProductRequest : IRequest<GetProductResponse>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 
     public class GetProductResponse
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
     }
 

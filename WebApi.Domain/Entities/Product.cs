@@ -8,7 +8,7 @@ using WebApi.Domain.Interfaces;
 
 namespace WebApi.Domain
 {
-    public class Product : AuditableEntity<int>
+    public class Product : AuditableEntity<Guid>
     {
         public string Name { get; set; }
     }

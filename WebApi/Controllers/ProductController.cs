@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Features.Products.Commands;
 using WebApi.Features.Products.Queries;
@@ -7,6 +8,7 @@ namespace WebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class ProductController : ControllerBase
 {
     private readonly ILogger<ProductController> _logger;
@@ -19,7 +21,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet(Name = "GetProduct")]
-    public async Task<GetProductResponse> Get(int productId)
+    public async Task<GetProductResponse> Get(Guid productId)
     {
         var response = await _mediator.Send(new GetProductRequest() { Id = productId });
 
@@ -28,7 +30,7 @@ public class ProductController : ControllerBase
 
 
     [HttpPost(Name = "AddProduct")]
-    public async Task<int> Post(CreateProductRequest product)
+    public async Task<Guid> Post(CreateProductRequest product)
     {
         var id = await _mediator.Send(product);
 

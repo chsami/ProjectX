@@ -1,24 +1,29 @@
 ﻿using MediatR;
 using WebApi.Infrastructure.Database;
+using WebApi.Infrastructure.Services.Firebase;
+using WebApi.Services;
 
 namespace WebApi.Features.Products.Commands
 {
-    public class CreateProductRequest : IRequest<int>
+    public class CreateProductRequest : IRequest<Guid>
     {
         public string Name { get; set; }
     }
 
-    public class CreateProductCommandHandler : IRequestHandler<CreateProductRequest, int>
+    public class CreateProductCommandHandler : IRequestHandler<CreateProductRequest, Guid>
     {
         private readonly ProjectDbContext _projectDbContext;
+        private readonly ICurrentUserService _currentUserService;
+        private readonly IFireBaseService _fireBaseService;
 
-
-        public CreateProductCommandHandler(ProjectDbContext projectDbContext)
+        public CreateProductCommandHandler(ProjectDbContext projectDbContext, ICurrentUserService currentUserService, IFireBaseService fireBaseService)
         {
             _projectDbContext = projectDbContext;
+            _currentUserService = currentUserService;
+            _fireBaseService = fireBaseService;
         }
 
-        public async Task<int> Handle(CreateProductRequest request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateProductRequest request, CancellationToken cancellationToken)
         {
             var productToAdd = new Domain.Product()
             {
@@ -27,7 +32,9 @@ namespace WebApi.Features.Products.Commands
 
             _projectDbContext.Products.Add(productToAdd);
 
-            await _projectDbContext.SaveChangesAsync("TODO userId", cancellationToken);
+            await _projectDbContext.SaveChangesAsync(_currentUserService.UserId, cancellationToken);
+
+            await _fireBaseService.SaveDocument();
 
             return productToAdd.Id;
         }
