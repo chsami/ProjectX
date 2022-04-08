@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using WebApi.Infrastructure.Database;
 using WebApi.Infrastructure.Services.Firebase;
+using WebApi.Infrastructure.Services.Firebase.Models;
 using WebApi.Services;
 
 namespace WebApi.Features.Products.Commands
@@ -34,7 +35,10 @@ namespace WebApi.Features.Products.Commands
 
             await _projectDbContext.SaveChangesAsync(_currentUserService.UserId, cancellationToken);
 
-            await _fireBaseService.SaveDocument();
+            await _fireBaseService.SaveDocument(new ProductDocument()
+            {
+                Name = productToAdd.Name
+            });
 
             return productToAdd.Id;
         }
