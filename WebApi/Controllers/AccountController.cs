@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Features.Accounts.Commands;
+using WebApi.Features.Accounts.Queries;
 
 namespace WebApi.Controllers;
 
@@ -16,6 +17,20 @@ public class AccountController : ControllerBase
     {
         _logger = logger;
         _mediator = mediator;
+    }
+    
+    [HttpGet(Name = "Roles")]
+    public async Task<List<GetRolesResponse>> GetRoles([FromQuery] string userId)
+    {
+        var response = await _mediator.Send(new GetRolesRequest() {UserId = userId});
+        return response;
+    }
+    
+    [HttpPost(Name = "AddRole")]
+    public async Task<IActionResult> AddRole([FromBody] AddRoleRequest addRoleRequest)
+    {
+        await _mediator.Send(addRoleRequest);
+        return Ok();
     }
 
     [HttpPost(Name = "Register")]

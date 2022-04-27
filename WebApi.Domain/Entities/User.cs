@@ -15,5 +15,6 @@ namespace WebApi.Domain.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public new string Id { get; set; }
         public string? Email { get; set; }
+        public List<Role> Roles { get; set; }
     }
 }

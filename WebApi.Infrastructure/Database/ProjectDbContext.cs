@@ -10,10 +10,34 @@ namespace WebApi.Infrastructure.Database
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Tenant> Tenants { get; set; }
+        public DbSet<Role> Roles { get; set; }
+
         public DbSet<Audit> AuditTrails { get; set; }
 
         public ProjectDbContext(DbContextOptions<ProjectDbContext> options) : base(options)
         {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Role>().HasData(
+                new Role()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "User",
+                    CreatedBy = "SEED",
+                    CreatedOn = DateTime.UtcNow,
+                },
+                new Role()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Admin",
+                    CreatedBy = "SEED",
+                    CreatedOn = DateTime.UtcNow,
+                }
+            );
+            base.OnModelCreating(modelBuilder);
         }
 
         public virtual async Task<int> SaveChangesAsync(string? userId = null, CancellationToken cancellationToken = new())
