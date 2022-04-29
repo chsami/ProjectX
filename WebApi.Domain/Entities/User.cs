@@ -16,5 +16,6 @@ namespace WebApi.Domain.Entities
         public new string Id { get; set; }
         public string? Email { get; set; }
         public List<Role> Roles { get; set; }
+        public List<Tenant> Tenants { get; set; }
     }
 }
