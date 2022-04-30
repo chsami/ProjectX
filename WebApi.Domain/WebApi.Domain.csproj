@@ -10,8 +10,4 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.3" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Entities\Role.cs" />
-  </ItemGroup>
-
 </Project>
