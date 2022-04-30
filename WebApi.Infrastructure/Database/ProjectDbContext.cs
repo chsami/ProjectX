@@ -75,12 +75,14 @@ namespace WebApi.Infrastructure.Database
                             break;
                     }
                 }
-
                 var auditEntry = new AuditEntry(entry)
                 {
                     TableName = entry.Entity.GetType().Name,
                     UserId = userId
                 };
+                
+                if (auditEntry.AuditType == AuditType.None) continue;
+                
                 auditEntries.Add(auditEntry);
                 foreach (var property in entry.Properties)
                 {

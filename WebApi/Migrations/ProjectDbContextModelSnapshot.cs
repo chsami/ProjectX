@@ -37,6 +37,21 @@ namespace WebApi.Migrations
                     b.ToTable("RoleUser");
                 });
 
+            modelBuilder.Entity("TenantUser", b =>
+                {
+                    b.Property<Guid>("TenantsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("text");
+
+                    b.HasKey("TenantsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("TenantUser");
+                });
+
             modelBuilder.Entity("WebApi.Domain.Audit", b =>
                 {
                     b.Property<int>("Id")
@@ -105,6 +120,22 @@ namespace WebApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("07e1e7fd-ca37-47f6-939c-e0663f7e70b5"),
+                            CreatedBy = "SEED",
+                            CreatedOn = new DateTime(2022, 4, 30, 16, 7, 50, 209, DateTimeKind.Utc).AddTicks(8010),
+                            Name = "User"
+                        },
+                        new
+                        {
+                            Id = new Guid("6d4a0d1a-d1c5-4740-849c-527cc42dbbe3"),
+                            CreatedBy = "SEED",
+                            CreatedOn = new DateTime(2022, 4, 30, 16, 7, 50, 209, DateTimeKind.Utc).AddTicks(8013),
+                            Name = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("WebApi.Domain.Entities.Tenant", b =>
@@ -113,12 +144,20 @@ namespace WebApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Domain")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
@@ -148,6 +187,7 @@ namespace WebApi.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("LastModifiedBy")
@@ -194,6 +234,21 @@ namespace WebApi.Migrations
                     b.HasOne("WebApi.Domain.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebApi.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("TenantUser", b =>
+                {
+                    b.HasOne("WebApi.Domain.Entities.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

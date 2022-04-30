@@ -4,36 +4,38 @@ using WebApi.Infrastructure.Database;
 using WebApi.Infrastructure.Services.Firebase;
 using WebApi.Services;
 
-namespace WebApi.Features.Accounts.Commands;
-public class AddRoleRequest : IRequest
+namespace WebApi.Features.Users.Commands;
+public class AddUserRolesRequest : IRequest<List<string>>
 {
     public string UserId { get; set; }
     public List<string> Roles { get; set; }
 }
 
-public class AddRoleCommandHandler : IRequestHandler<AddRoleRequest>
+public class AddUserRolesCommandHandler : IRequestHandler<AddUserRolesRequest, List<string>>
 {
     private readonly ProjectDbContext _projectDbContext;
     private readonly ICurrentUserService _currentUserService;
 
-    public AddRoleCommandHandler(ProjectDbContext projectDbContext,  ICurrentUserService currentUserService)
+    public AddUserRolesCommandHandler(ProjectDbContext projectDbContext,  ICurrentUserService currentUserService)
     {
         _projectDbContext = projectDbContext;
         _currentUserService = currentUserService;
     }
 
-    public async Task<Unit> Handle(AddRoleRequest request, CancellationToken cancellationToken)
+    public async Task<List<string>> Handle(AddUserRolesRequest request, CancellationToken cancellationToken)
     {
-        var user = await _projectDbContext.Users.SingleAsync(x => x.Id == request.UserId);
+        var user = await _projectDbContext.Users.Include(x => x.Roles).SingleAsync(x => x.Id == request.UserId);
 
         var roles = await _projectDbContext.Roles.Where(x => request.Roles.Contains(x.Name)).ToListAsync();
 
         if (!roles.Any()) throw new ArgumentException("Roles not found.");
+
+        user.Roles.Clear();
         
         user.Roles.AddRange(roles);
         
         await _projectDbContext.SaveChangesAsync(_currentUserService.UserId, cancellationToken);
 
-        return Unit.Value;
+        return user.Roles.Select(x => x.Name).ToList();
     }
 }

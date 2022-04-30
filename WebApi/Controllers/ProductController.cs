@@ -6,7 +6,7 @@ using WebApi.Features.Products.Queries;
 
 namespace WebApi.Controllers;
 
-[ApiController]
+[ApiController, Authorize]
 [Route("[controller]")]
 public class ProductController : ControllerBase
 {
@@ -20,14 +20,14 @@ public class ProductController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<List<GetAllProductsResponse>> GetAllProducts()
+    [ProducesResponseType(typeof(List<GetAllProductsResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllProducts()
     {
-        var response = await _mediator.Send(new GetAllProductsRequest());
-
-        return response;
+        return Ok(await _mediator.Send(new GetAllProductsRequest()));
     }
 
     [HttpGet("{productId:guid}")]
+    [ProducesResponseType(typeof(GetProductResponse), StatusCodes.Status200OK)]
     public async Task<GetProductResponse> GetProduct(Guid productId)
     {
         var response = await _mediator.Send(new GetProductRequest() { Id = productId });
@@ -35,12 +35,10 @@ public class ProductController : ControllerBase
         return response;
     }
 
-
     [HttpPost]
-    public async Task<Guid> CreateProduct(CreateProductRequest product)
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CreateProduct(CreateProductRequest product)
     {
-        var id = await _mediator.Send(product);
-
-        return id;
+        return Ok(await _mediator.Send(product));
     }
 }

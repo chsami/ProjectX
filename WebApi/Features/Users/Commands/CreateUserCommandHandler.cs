@@ -3,28 +3,26 @@ using WebApi.Infrastructure.Database;
 using WebApi.Infrastructure.Services.Firebase;
 using WebApi.Services;
 
-namespace WebApi.Features.Accounts.Commands;
+namespace WebApi.Features.Users.Commands;
 
-public class RegisterAccountRequest : IRequest<int>
+public class CreateUserRequest : IRequest<string>
 {
     public string Email { get; set; }
     public string Password { get; set; }
 }
 
-public class RegisterAccountCommandHandler : IRequestHandler<RegisterAccountRequest, int>
+public class CreateUserCommandHandler : IRequestHandler<CreateUserRequest, string>
 {
     private readonly ProjectDbContext _projectDbContext;
-    private readonly ICurrentUserService _currentUserService;
     private readonly IFireBaseService _firebaseService;
 
-    public RegisterAccountCommandHandler(ProjectDbContext projectDbContext, ICurrentUserService currentUserService, IFireBaseService firebaseService)
+    public CreateUserCommandHandler(ProjectDbContext projectDbContext, ICurrentUserService currentUserService, IFireBaseService firebaseService)
     {
         _projectDbContext = projectDbContext;
-        _currentUserService = currentUserService;
         _firebaseService = firebaseService;
     }
 
-    public async Task<int> Handle(RegisterAccountRequest request, CancellationToken cancellationToken)
+    public async Task<string> Handle(CreateUserRequest request, CancellationToken cancellationToken)
     {
         //send information to firebase
 
@@ -38,6 +36,6 @@ public class RegisterAccountCommandHandler : IRequestHandler<RegisterAccountRequ
 
         await _projectDbContext.SaveChangesAsync(firebaseUser.Uid, cancellationToken);
 
-        return 0;
+        return firebaseUser.Uid;
     }
 }

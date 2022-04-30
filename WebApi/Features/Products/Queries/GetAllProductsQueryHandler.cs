@@ -16,11 +16,11 @@ namespace WebApi.Features.Products.Queries
         public string Name { get; set; }
     }
 
-    public class GetAllProductsHandlerHandler : IRequestHandler<GetAllProductsRequest, List<GetAllProductsResponse>>
+    public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsRequest, List<GetAllProductsResponse>>
     {
         private readonly ProjectDbContext _projectDbContext;
 
-        public GetAllProductsHandlerHandler(ProjectDbContext projectDbContext)
+        public GetAllProductsQueryHandler(ProjectDbContext projectDbContext)
         {
             _projectDbContext = projectDbContext;
         }
