@@ -54,7 +54,7 @@ jobs:
         run: dotnet build ./WebApi/WebApi.sln --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ./ProjectX/WebApi/WebApi.sln
+        run: dotnet publish ./WebApi/WebApi.sln -c Release -o ${{env.DOTNET_ROOT}}/ProjectX
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
