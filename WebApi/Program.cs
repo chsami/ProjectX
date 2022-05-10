@@ -19,6 +19,8 @@ builder.Services.AddCors(options =>
 });
 
 // Add services to the container.
+var assembly = Assembly.GetExecutingAssembly();
+builder.Services.AddMediatR(assembly);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -47,8 +49,7 @@ builder.Services.AddSwaggerGen(c =>
                     }
                 });
 });
-var assembly = Assembly.GetExecutingAssembly();
-builder.Services.AddMediatR(assembly);
+
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
