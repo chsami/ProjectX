@@ -8,6 +8,12 @@ namespace WebApi.Controllers;
 [ApiExplorerSettings(IgnoreApi = true)]
 public class ErrorController : ControllerBase
 {
+    private readonly IConfiguration _configuration;
+
+    public ErrorController(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
     [Route("error")]
     public ProblemDetails Error()
     {
@@ -19,5 +25,10 @@ public class ErrorController : ControllerBase
             Detail = exception?.StackTrace,
             Title = exception?.Message
         };
+    }
+    [Route("connectionstring")]
+    public string Connectionstring()
+    {
+        return _configuration.GetConnectionString("DefaultConnection");
     }
 }
