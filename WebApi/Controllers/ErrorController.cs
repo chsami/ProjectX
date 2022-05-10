@@ -7,6 +7,7 @@ namespace WebApi.Controllers;
 public class ErrorController : ControllerBase
 {
     [Route("/error")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public IActionResult HandleError() =>
         Problem();
 }
