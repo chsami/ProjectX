@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.OpenApi.Models;
 using WebApi.Infrastructure;
 using WebApi.Services;
@@ -60,7 +61,15 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
-app.UseExceptionHandler("/error");
+app.UseExceptionHandler(c => c.Run(async context =>
+{
+    var exception = context.Features
+        .Get<IExceptionHandlerPathFeature>()
+        ?.Error;
+    var response = new { error = exception.Message };
+    await context.Response.WriteAsJsonAsync(response);
+}));
+app.UseExceptionHandler("/error"); // Add this
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
