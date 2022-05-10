@@ -14,6 +14,7 @@ public class ErrorController : ControllerBase
     {
         _configuration = configuration;
     }
+    
     [Route("error")]
     public ProblemDetails Error()
     {
@@ -29,7 +30,7 @@ public class ErrorController : ControllerBase
     [Route("abc")]
     public string Abc()
     {
-        return "Hello world";
+        return _configuration.GetSection("TokenKey").Value;
     }
     [Route("connectionstring")]
     public string Connectionstring()
