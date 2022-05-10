@@ -30,11 +30,13 @@ public class ErrorController : ControllerBase
     [Route("abc")]
     public string Abc()
     {
-        return _configuration.GetSection("TokenKey").Value;
+        var a = Environment.GetEnvironmentVariable("POSTGRESQLCONNSTR_DefaultConnection");
+        return a ?? "empty";
     }
     [Route("connectionstring")]
     public string Connectionstring()
     {
-        return _configuration.GetConnectionString("DefaultConnection");
+        var result = _configuration.GetConnectionString("ConnectionStrings:DefaultConnection");
+        return result ?? "empty";
     }
 }
