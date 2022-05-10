@@ -26,6 +26,11 @@ public class ErrorController : ControllerBase
             Title = exception?.Message
         };
     }
+    [Route("abc")]
+    public string Abc()
+    {
+        return "Hello world";
+    }
     [Route("connectionstring")]
     public string Connectionstring()
     {
