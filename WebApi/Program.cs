@@ -1,3 +1,4 @@
+using System.Reflection;
 using MediatR;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.OpenApi.Models;
@@ -46,7 +47,8 @@ builder.Services.AddSwaggerGen(c =>
                     }
                 });
 });
-builder.Services.AddMediatR(typeof(Program));
+var assembly = Assembly.GetExecutingAssembly();
+builder.Services.AddMediatR(assembly);
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
