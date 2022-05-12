@@ -15,7 +15,7 @@ namespace WebApi.Infrastructure
         {
 
             service.AddDbContext<ProjectDbContext>(options => options.
-                UseNpgsql("Host=pimproject.postgres.database.azure.com;Username=pimproject;Password=3hIFRrFZHl5P;Database=postgres", 
+                UseNpgsql(configuration.GetConnectionString("DefaultConnection"), 
                     b => b.MigrationsAssembly("WebApi")));
 
             var key = Convert.FromBase64String(configuration.GetSection("TokenKey").Value);

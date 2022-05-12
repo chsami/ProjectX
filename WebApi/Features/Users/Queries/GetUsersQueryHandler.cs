@@ -31,7 +31,7 @@ public class GetUsersQueryHandler : IRequestHandler<GetUsersRequest, GetUsersRes
     public async Task<GetUsersResponse> Handle(GetUsersRequest request, CancellationToken cancellationToken)
     {
         //query
-        var users = await _projectDbContext.Users.Paginate(request.PageSize, request.PageNumber).ToListAsync();
+        var users = await _projectDbContext.Users.Include(x => x.Roles).Include(x => x.Tenants).Paginate(request.PageSize, request.PageNumber).ToListAsync();
         //mapping
         return new GetUsersResponse()
         {
