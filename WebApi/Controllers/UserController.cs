@@ -6,7 +6,7 @@ using WebApi.Features.Users.Queries;
 
 namespace WebApi.Controllers;
 
-[ApiController, Authorize]
+[ApiController]
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
@@ -25,7 +25,14 @@ public class UserController : ControllerBase
     {
         return Ok(await _mediator.Send(new GetUserByEmailRequest() {Email = email}));
     }
-
+    
+    [HttpGet("Users")]
+    [ProducesResponseType(typeof(GetUsersResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Get([FromQuery] int pageNumber, int pageSize)
+    {
+        return Ok(await _mediator.Send(new GetUsersRequest() { PageNumber = pageNumber, PageSize = pageSize}));
+    }
+    
     [HttpPost]
     [AllowAnonymous]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
