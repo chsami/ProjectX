@@ -15,9 +15,9 @@ public class GetUsersRequest : IRequest<GetUsersResponse>
 
 public class GetUsersResponse
 {
-    public List<User> Users { get; set; }
-
+    public List<UsersResponseModel> Users { get; set; }
 }
+
 
 public class GetUsersQueryHandler : IRequestHandler<GetUsersRequest, GetUsersResponse>
 {
@@ -35,7 +35,23 @@ public class GetUsersQueryHandler : IRequestHandler<GetUsersRequest, GetUsersRes
         //mapping
         return new GetUsersResponse()
         {
-            Users = users
+            Users = users.Select(x => new UsersResponseModel()
+            {
+                Id = x.Id,
+                Email = x.Email,
+                CreatedOn = x.CreatedOn,
+                Roles = x.Roles.Select(r => r.Name).ToList(),
+                Tenants = x.Tenants.Select(t => t.Name).ToList()
+            }).ToList()
         };
     }
+}
+
+public class UsersResponseModel
+{
+    public string Id { get; set; }
+    public string Email { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public List<string> Roles { get; set; }
+    public List<string> Tenants { get; set; }
 }
