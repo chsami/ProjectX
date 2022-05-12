@@ -18,13 +18,21 @@ public class UserController : ControllerBase
         _logger = logger;
         _mediator = mediator;
     }
-
+    
     [HttpGet]
+    [ProducesResponseType(typeof(GetUserByIdResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Get([FromQuery] string Id)
+    {
+        return Ok(await _mediator.Send(new GetUserByIdRequest() {Id = Id}));
+    }
+
+    [HttpGet("UserByEmail")]
     [ProducesResponseType(typeof(GetUserByEmailResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Get([FromQuery] string email)
+    public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
     {
         return Ok(await _mediator.Send(new GetUserByEmailRequest() {Email = email}));
     }
+    
     
     [HttpGet("Users")]
     [ProducesResponseType(typeof(GetUsersResponse), StatusCodes.Status200OK)]
