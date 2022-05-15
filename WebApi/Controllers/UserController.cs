@@ -21,9 +21,9 @@ public class UserController : ControllerBase
     
     [HttpGet]
     [ProducesResponseType(typeof(GetUserByIdResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Get([FromQuery] string Id)
+    public async Task<IActionResult> Get([FromQuery] string id)
     {
-        return Ok(await _mediator.Send(new GetUserByIdRequest() {Id = Id}));
+        return Ok(await _mediator.Send(new GetUserByIdRequest() {Id = id}));
     }
 
     [HttpGet("UserByEmail")]
