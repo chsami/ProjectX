@@ -11,22 +11,21 @@ public static class Extensions
 
 public class PaginatedResult<T>
 {
-    private const int defaultPageSize = 20;
-    private const int maxPageSize = 50;
+    private const int DefaultPageSize = 20;
+    private const int MaxPageSize = 50;
 
-    public int Total { get; private set; }
-    public int Limit { get; private set; }
-    public int Page { get; private set; }
-    public IQueryable<T> Objects { get; private set; }
+    private int Total { get; set; }
+    private int Limit { get; set; }
+    private int Page { get; set; }
 
-    internal PaginatedResult(int pageNumber, int pageSize = defaultPageSize)
+    internal PaginatedResult(int pageNumber, int pageSize = DefaultPageSize)
     {
         Limit = pageSize;
         Page = pageNumber;
 
-        if (Limit is < 0 or > maxPageSize)
+        if (Limit is < 0 or > MaxPageSize)
         {
-            Limit = defaultPageSize;
+            Limit = DefaultPageSize;
         }
         if (pageNumber < 0)
         {
@@ -45,11 +44,11 @@ public class PaginatedResult<T>
         }
 
         var skip = Page * Limit;
-        if (skip + Limit > Total)
-        {
-            skip = Total - Limit;
-            Page = Total / Limit - 1;
-        }
+        
+        if (skip + Limit <= Total) return queryable.Skip(skip).Take(Limit);
+        
+        skip = Total - Limit;
+        Page = Total / Limit - 1;
 
         return queryable.Skip(skip).Take(Limit);
     }
