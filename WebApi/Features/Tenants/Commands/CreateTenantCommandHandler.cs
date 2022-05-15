@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebApi.Domain.Entities;
 using WebApi.Infrastructure.Database;
-using WebApi.Services;
 
 namespace WebApi.Features.Tenants.Commands;
 
@@ -22,12 +21,10 @@ public class CreateTenantResponse
 public class CreateTenantQueryHandler : IRequestHandler<CreateTenantRequest, CreateTenantResponse>
 {
     private readonly ProjectDbContext _projectDbContext;
-    private readonly ICurrentUserService _currentUserService;
 
-    public CreateTenantQueryHandler(ProjectDbContext projectDbContext, ICurrentUserService currentUserService)
+    public CreateTenantQueryHandler(ProjectDbContext projectDbContext)
     {
         _projectDbContext = projectDbContext;
-        _currentUserService = currentUserService;
     }
 
     public async Task<CreateTenantResponse> Handle(CreateTenantRequest request, CancellationToken cancellationToken)
@@ -44,7 +41,7 @@ public class CreateTenantQueryHandler : IRequestHandler<CreateTenantRequest, Cre
         //query
         await _projectDbContext.Tenants.AddAsync(tenant);
         
-        await _projectDbContext.SaveChangesAsync(_currentUserService.UserId, cancellationToken);
+        await _projectDbContext.SaveChangesAsync(cancellationToken);
         
         //mapping
         return new CreateTenantResponse()

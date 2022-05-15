@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebApi.Infrastructure.Database;
 using WebApi.Infrastructure.Services.Firebase;
-using WebApi.Services;
 
 namespace WebApi.Features.Users.Commands;
 public class AddUserRolesRequest : IRequest<List<string>>
@@ -14,12 +13,10 @@ public class AddUserRolesRequest : IRequest<List<string>>
 public class AddUserRolesCommandHandler : IRequestHandler<AddUserRolesRequest, List<string>>
 {
     private readonly ProjectDbContext _projectDbContext;
-    private readonly ICurrentUserService _currentUserService;
 
-    public AddUserRolesCommandHandler(ProjectDbContext projectDbContext,  ICurrentUserService currentUserService)
+    public AddUserRolesCommandHandler(ProjectDbContext projectDbContext)
     {
         _projectDbContext = projectDbContext;
-        _currentUserService = currentUserService;
     }
 
     public async Task<List<string>> Handle(AddUserRolesRequest request, CancellationToken cancellationToken)
@@ -34,7 +31,7 @@ public class AddUserRolesCommandHandler : IRequestHandler<AddUserRolesRequest, L
         
         user.Roles.AddRange(roles);
         
-        await _projectDbContext.SaveChangesAsync(_currentUserService.UserId, cancellationToken);
+        await _projectDbContext.SaveChangesAsync(cancellationToken);
 
         return user.Roles.Select(x => x.Name).ToList();
     }

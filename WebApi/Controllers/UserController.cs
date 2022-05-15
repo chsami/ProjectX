@@ -49,6 +49,14 @@ public class UserController : ControllerBase
         return Ok(await _mediator.Send(createUserRequest));
     }
     
+    [HttpDelete]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Post([FromQuery] string userId)
+    {
+        return Ok(await _mediator.Send(new DeleteUserRequest() {UserId = userId}));
+    }
+    
     [HttpGet("Role")]
     [ProducesResponseType(typeof(GetUserRolesResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> Roles([FromQuery] string userId)

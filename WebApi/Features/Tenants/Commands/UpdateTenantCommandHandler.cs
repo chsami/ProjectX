@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebApi.Domain.Entities;
 using WebApi.Infrastructure.Database;
-using WebApi.Services;
 
 namespace WebApi.Features.Tenants.Commands;
 
@@ -23,12 +22,10 @@ public class UpdateTenantResponse
 public class UpdateTenantQueryHandler : IRequestHandler<UpdateTenantRequest, UpdateTenantResponse>
 {
     private readonly ProjectDbContext _projectDbContext;
-    private readonly ICurrentUserService _currentUserService;
 
-    public UpdateTenantQueryHandler(ProjectDbContext projectDbContext, ICurrentUserService currentUserService)
+    public UpdateTenantQueryHandler(ProjectDbContext projectDbContext)
     {
         _projectDbContext = projectDbContext;
-        _currentUserService = currentUserService;
     }
 
     public async Task<UpdateTenantResponse> Handle(UpdateTenantRequest request, CancellationToken cancellationToken)
@@ -43,7 +40,7 @@ public class UpdateTenantQueryHandler : IRequestHandler<UpdateTenantRequest, Upd
 
         _projectDbContext.Tenants.Update(tenant);
 
-        await _projectDbContext.SaveChangesAsync(_currentUserService.UserId, cancellationToken);
+        await _projectDbContext.SaveChangesAsync(cancellationToken);
 
         return new UpdateTenantResponse()
         {

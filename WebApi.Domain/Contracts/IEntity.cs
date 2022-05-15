@@ -13,6 +13,6 @@ namespace WebApi.Domain.Interfaces
 
     public interface IEntity
     {
-
+        public bool IsDeleted { get; set; }
     }
 }

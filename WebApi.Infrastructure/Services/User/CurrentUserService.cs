@@ -1,7 +1,8 @@
 ﻿using System.Security.Claims;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 
-namespace WebApi.Services;
+namespace WebApi.Infrastructure;
 
 public class CurrentUserService : ICurrentUserService
 {

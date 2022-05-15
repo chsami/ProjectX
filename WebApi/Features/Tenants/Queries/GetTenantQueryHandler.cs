@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using WebApi.Domain.Entities;
 using WebApi.Infrastructure.Database;
 using WebApi.Infrastructure.Services.Firebase;
-using WebApi.Services;
 
 namespace WebApi.Features.Tenants.Queries
 {

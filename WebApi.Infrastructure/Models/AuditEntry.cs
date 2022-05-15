@@ -36,8 +36,8 @@ namespace WebApi.Infrastructure.Models
                 TableName = TableName,
                 DateTime = DateTime.UtcNow,
                 PrimaryKey = JsonSerializer.Serialize(KeyValues),
-                OldValues = OldValues.Count == 0 ? null : JsonSerializer.Serialize(OldValues),
-                NewValues = NewValues.Count == 0 ? null : JsonSerializer.Serialize(NewValues),
+                OldValues = JsonSerializer.Serialize(OldValues),
+                NewValues = JsonSerializer.Serialize(NewValues),
                 AffectedColumns = ChangedColumns.Count == 0 ? null : JsonSerializer.Serialize(ChangedColumns)
             };
             return audit;

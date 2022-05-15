@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using WebApi.Infrastructure.Database;
 using WebApi.Infrastructure.Services.Firebase;
-using WebApi.Services;
 
 namespace WebApi.Features.Users.Commands;
 
@@ -16,7 +15,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserRequest, strin
     private readonly ProjectDbContext _projectDbContext;
     private readonly IFireBaseService _firebaseService;
 
-    public CreateUserCommandHandler(ProjectDbContext projectDbContext, ICurrentUserService currentUserService, IFireBaseService firebaseService)
+    public CreateUserCommandHandler(ProjectDbContext projectDbContext, IFireBaseService firebaseService)
     {
         _projectDbContext = projectDbContext;
         _firebaseService = firebaseService;
@@ -34,7 +33,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserRequest, strin
             Email = firebaseUser.Email
         });
 
-        await _projectDbContext.SaveChangesAsync(firebaseUser.Uid, cancellationToken);
+        await _projectDbContext.SaveChangesAsync(cancellationToken);
 
         return firebaseUser.Uid;
     }

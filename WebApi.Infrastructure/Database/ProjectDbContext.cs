@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using WebApi.Domain;
 using WebApi.Domain.Contracts;
 using WebApi.Domain.Entities;
@@ -8,6 +10,7 @@ namespace WebApi.Infrastructure.Database
 {
     public class ProjectDbContext : DbContext
     {
+        private readonly ICurrentUserService _currentUserService;
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Tenant> Tenants { get; set; }
@@ -15,12 +18,14 @@ namespace WebApi.Infrastructure.Database
 
         public DbSet<Audit> AuditTrails { get; set; }
 
-        public ProjectDbContext(DbContextOptions<ProjectDbContext> options) : base(options)
+        public ProjectDbContext(DbContextOptions<ProjectDbContext> options, ICurrentUserService currentUserService) : base(options)
         {
+            _currentUserService = currentUserService;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>().HasQueryFilter(p => !p.IsDeleted);
             modelBuilder.Entity<Role>().HasData(
                 new Role()
                 {
@@ -40,9 +45,11 @@ namespace WebApi.Infrastructure.Database
             base.OnModelCreating(modelBuilder);
         }
 
-        public virtual async Task<int> SaveChangesAsync(string? userId = null, CancellationToken cancellationToken = new())
+        public virtual async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
         {
-            var auditEntries = OnBeforeSaveChanges(userId);
+           // var httpContextAccessor = this.GetService<IHttpContextAccessor>();
+           // var a = httpContextAccessor.HttpContext?.User;
+            var auditEntries = OnBeforeSaveChanges(_currentUserService.UserId);
             var result = await base.SaveChangesAsync(cancellationToken);
             await OnAfterSaveChanges(auditEntries, cancellationToken);
             return result;
@@ -66,22 +73,21 @@ namespace WebApi.Infrastructure.Database
                     {
                         case EntityState.Added:
                             auditableEntity.CreatedOn = DateTime.UtcNow;
-                            auditableEntity.CreatedBy = userId;
+                            auditableEntity.CreatedBy = userId ?? "";
                             break;
 
                         case EntityState.Modified:
                             auditableEntity.LastModifiedOn = DateTime.UtcNow;
-                            auditableEntity.LastModifiedBy = userId;
+                            auditableEntity.LastModifiedBy = userId ?? "";
                             break;
                     }
                 }
                 var auditEntry = new AuditEntry(entry)
                 {
                     TableName = entry.Entity.GetType().Name,
-                    UserId = userId
+                    UserId = userId ?? ""
                 };
                 
-                if (auditEntry.AuditType == AuditType.None) continue;
                 
                 auditEntries.Add(auditEntry);
                 foreach (var property in entry.Properties)
@@ -121,6 +127,11 @@ namespace WebApi.Infrastructure.Database
                             }
                             break;
                     }
+                }
+
+                if (auditEntry.AuditType == AuditType.None)
+                {
+                    auditEntries.Remove(auditEntry);
                 }
             }
             foreach (var auditEntry in auditEntries.Where(_ => !_.HasTemporaryProperties))

@@ -1,4 +1,4 @@
-﻿namespace WebApi.Services;
+﻿namespace WebApi.Infrastructure;
 
 public interface ICurrentUserService
 {

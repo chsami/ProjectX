@@ -39,6 +39,8 @@ namespace WebApi.Infrastructure
             });
 
             service.AddTransient<IFireBaseService, FirebaseService>();
+            service.AddScoped<ICurrentUserService, CurrentUserService>();
+
 
         }
     }

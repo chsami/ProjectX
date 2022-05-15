@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.OpenApi.Models;
 using WebApi.Infrastructure;
-using WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,7 +51,6 @@ builder.Services.AddSwaggerGen(c =>
 
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
