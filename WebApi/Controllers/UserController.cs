@@ -6,7 +6,7 @@ using WebApi.Features.Users.Queries;
 
 namespace WebApi.Controllers;
 
-[ApiController]
+[ApiController, Authorize]
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
@@ -49,8 +49,14 @@ public class UserController : ControllerBase
         return Ok(await _mediator.Send(createUserRequest));
     }
     
+    [HttpPut]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Post([FromBody] UpdateUserRequest updateUserRequest)
+    {
+        return Ok(await _mediator.Send(updateUserRequest));
+    }
+    
     [HttpDelete]
-    [AllowAnonymous]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public async Task<IActionResult> Post([FromQuery] string userId)
     {

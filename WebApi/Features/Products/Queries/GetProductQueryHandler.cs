@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using WebApi.Infrastructure.Database;
 using WebApi.Infrastructure.Services.Firebase;
 
@@ -27,7 +28,7 @@ namespace WebApi.Features.Products.Queries
         public async Task<GetProductResponse> Handle(GetProductRequest request, CancellationToken cancellationToken)
         {
             //query
-            var product = _projectDbContext.Products.Single(x => x.Id == request.Id);
+            var product = await _projectDbContext.Products.SingleAsync(x => x.Id == request.Id);
 
             //mapping
             var response = new GetProductResponse()
