@@ -25,6 +25,18 @@ namespace WebApi.Infrastructure.Services
             _db = FirestoreDb.Create(configuration.GetSection("Firebase:ValidAudience").Value);
         }
 
+        public async Task SetCustomUserClaimsAsync(string uid, IList<string> roles)
+        {
+            var claims = new Dictionary<string, object>();
+            
+            foreach (var role in roles)
+            {
+                claims.Add(role, true);
+            }
+            
+            await FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(uid, claims);
+        }
+
         public async Task<UserRecord> CreateUser(string email, string password)
         {
             var result = await FirebaseAuth.DefaultInstance.CreateUserAsync(new UserRecordArgs()

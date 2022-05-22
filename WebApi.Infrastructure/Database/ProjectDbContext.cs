@@ -26,6 +26,12 @@ namespace WebApi.Infrastructure.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasQueryFilter(p => !p.IsDeleted);
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+            modelBuilder.Entity<Role>()
+                .HasIndex(u => u.Name)
+                .IsUnique();
             modelBuilder.Entity<Role>().HasData(
                 new Role()
                 {

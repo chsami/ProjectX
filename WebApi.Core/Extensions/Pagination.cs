@@ -47,7 +47,7 @@ public class PaginatedResult<T>
         
         if (skip + Limit <= Total) return queryable.Skip(skip).Take(Limit);
         
-        skip = Total - Limit;
+        //skip = Total - Limit;
         Page = Total / Limit - 1;
 
         return queryable.Skip(skip).Take(Limit);

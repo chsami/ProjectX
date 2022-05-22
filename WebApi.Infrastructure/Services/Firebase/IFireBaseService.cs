@@ -10,6 +10,7 @@ namespace WebApi.Infrastructure.Services.Firebase
 {
     public interface IFireBaseService
     {
+        Task SetCustomUserClaimsAsync(string uid, IList<string> roles);
         Task<UserRecord> CreateUser(string email, string password);
         Task SaveDocument(ProductDocument productDocument);
 

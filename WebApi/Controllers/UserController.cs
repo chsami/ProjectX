@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Features.Users.Commands;
 using WebApi.Features.Users.Queries;
+using WebApi.Infrastructure.Services.Firebase;
 
 namespace WebApi.Controllers;
 
@@ -12,13 +13,15 @@ public class UserController : ControllerBase
 {
     private readonly ILogger<UserController> _logger;
     private readonly IMediator _mediator;
+    private readonly IFireBaseService _fireBaseService;
 
-    public UserController(ILogger<UserController> logger, IMediator mediator)
+    public UserController(ILogger<UserController> logger, IMediator mediator, IFireBaseService fireBaseService)
     {
         _logger = logger;
         _mediator = mediator;
+        _fireBaseService = fireBaseService;
     }
-    
+
     [HttpGet]
     [ProducesResponseType(typeof(GetUserByIdResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get([FromQuery] string id)
