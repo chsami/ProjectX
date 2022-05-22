@@ -20,6 +20,7 @@ public class GetUsersResponse
     public DateTime CreatedOn { get; set; }
     public List<string> Roles { get; set; }
     public List<string> Tenants { get; set; }
+    public int TotalCount { get; set; }
 }
 
 
@@ -39,6 +40,8 @@ public class GetUsersQueryHandler : IRequestHandler<GetUsersRequest, List<GetUse
             .Include(x => x.Roles)
             .Include(x => x.Tenants)
             .Paginate(request.PageSize, request.PageNumber).ToListAsync();
+
+        var totalCount = await _projectDbContext.Users.CountAsync();
         
         //mapping
         return users.Select(x => new GetUsersResponse()
@@ -47,7 +50,8 @@ public class GetUsersQueryHandler : IRequestHandler<GetUsersRequest, List<GetUse
             Email = x.Email,
             CreatedOn = x.CreatedOn,
             Roles = x.Roles.Select(r => r.Name).ToList(),
-            Tenants = x.Tenants.Select(t => t.Name).ToList()
+            Tenants = x.Tenants.Select(t => t.Name).ToList(),
+            TotalCount = totalCount
         }).ToList();
     }
 }
