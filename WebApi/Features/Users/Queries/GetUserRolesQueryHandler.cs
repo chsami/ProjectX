@@ -12,7 +12,9 @@ public class GetUserRolesRequest : IRequest<List<GetUserRolesResponse>>
 
 public class GetUserRolesResponse
 {
+    public Guid Id { get; set; }
     public string Name { get; set; }
+    public bool Selected { get; set; }
 }
 
 public class GetUserRolesQueryHandler : IRequestHandler<GetUserRolesRequest, List<GetUserRolesResponse>>
@@ -29,9 +31,13 @@ public class GetUserRolesQueryHandler : IRequestHandler<GetUserRolesRequest, Lis
         //query
         var user = await _projectDbContext.Users.Include(x => x.Roles).SingleAsync(x => x.Id == request.UserId);
 
-        return user.Roles.Select(x => new GetUserRolesResponse()
+        var roles = await _projectDbContext.Roles.ToListAsync();
+
+        return roles.Select(x => new GetUserRolesResponse()
         {
-            Name = x.Name
+            Id = x.Id,
+            Name = x.Name,
+            Selected = user.Roles.Select(c => c.Id).Contains(x.Id)
         }).ToList();
     }
 }

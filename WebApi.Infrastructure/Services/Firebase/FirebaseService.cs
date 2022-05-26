@@ -29,10 +29,7 @@ namespace WebApi.Infrastructure.Services
         {
             var claims = new Dictionary<string, object>();
             
-            foreach (var role in roles)
-            {
-                claims.Add(role, true);
-            }
+            claims.Add("role", roles.ToArray());
             
             await FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(uid, claims);
         }
