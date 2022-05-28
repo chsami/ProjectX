@@ -1,13 +1,11 @@
 ﻿using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
-using Microsoft.Extensions.Configuration;
-using WebApi.Infrastructure.Services.Firebase;
 using Google.Cloud.Firestore;
-using WebApi.Domain;
+using Microsoft.Extensions.Configuration;
 using WebApi.Infrastructure.Services.Firebase.Models;
 
-namespace WebApi.Infrastructure.Services
+namespace WebApi.Infrastructure.Services.Firebase
 {
     public class FirebaseService : IFireBaseService
     {
@@ -30,6 +28,15 @@ namespace WebApi.Infrastructure.Services
             var claims = new Dictionary<string, object>();
             
             claims.Add("role", roles.ToArray());
+            
+            await FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(uid, claims);
+        }
+        
+        public async Task ClearCustomUserClaimsAsync(string uid)
+        {
+            var claims = new Dictionary<string, object>();
+            
+            claims.Add("role", Array.Empty<string>());
             
             await FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(uid, claims);
         }

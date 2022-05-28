@@ -25,6 +25,13 @@ public class AddUserRolesCommandHandler : IRequestHandler<AddUserRolesRequest, L
     {
         var user = await _projectDbContext.Users.Include(x => x.Roles).SingleAsync(x => x.Id == request.UserId);
 
+        if (!request.Roles.Any())
+        {
+            user.Roles.Clear();
+            await _projectDbContext.SaveChangesAsync(cancellationToken);
+            return new List<string>();
+        }
+
         var roles = await _projectDbContext.Roles.Where(x => request.Roles.Contains(x.Id)).ToListAsync();
 
         if (!roles.Any()) throw new ArgumentException("Roles not found.");

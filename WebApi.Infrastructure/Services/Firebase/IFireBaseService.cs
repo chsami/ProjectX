@@ -13,6 +13,7 @@ namespace WebApi.Infrastructure.Services.Firebase
         Task SetCustomUserClaimsAsync(string uid, IList<string> roles);
         Task<UserRecord> CreateUser(string email, string password);
         Task SaveDocument(ProductDocument productDocument);
+        Task ClearCustomUserClaimsAsync(string uid);
 
     }
 }
