@@ -36,8 +36,6 @@ namespace WebApi.Infrastructure.Services.Firebase
         {
             var claims = new Dictionary<string, object>();
             
-            claims.Add("role", Array.Empty<string>());
-            
             await FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(uid, claims);
         }
 
